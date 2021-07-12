@@ -6,9 +6,10 @@ vec = pygame.math.Vector2
 
 
 class Enemy:
-    def __init__(self, app, pos, number):
+    def __init__(self, app, pos, number, nome):
         self.app = app
         self.grid_pos = pos
+        self.path = 'fas'
         self.starting_pos = [pos.x, pos.y]
         self.pix_pos = self.get_pix_pos()
         self.radius = int(self.app.cell_width//2.3)
