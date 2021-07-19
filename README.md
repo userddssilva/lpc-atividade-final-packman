@@ -27,6 +27,9 @@ Equipe: selecionada durante a aula
 Link dos Sprites do game
 http://labs.phaser.io/assets/games/pacman/
 
+
+
+
 # Como executar 
 ```
 pip install requirements.txt
@@ -34,4 +37,4 @@ pip install requirements.txt
 python main.py
 ```
 # Apresentação
-<div style="text-align:center"><img src="apresentacao-final.mp4" /></div>
+https://user-images.githubusercontent.com/51340097/126236043-9a2d77f0-46b9-4579-930f-e488e7021fc4.mp4
