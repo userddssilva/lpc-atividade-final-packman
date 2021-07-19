@@ -179,6 +179,8 @@ class App:
     def remove_life(self):
         self.player.lives -= 1
         if self.player.lives == 0:
+            sound = pygame.mixer.Sound('Sounds/death_1.wav')
+            sound.play()
             self.state = "game over"
         else:
             self.player.grid_pos = Vector2(self.player.starting_pos)

@@ -1,6 +1,8 @@
 import pygame
 from pygame.math import Vector2
 
+import time
+
 from settings import *
 
 
@@ -78,6 +80,10 @@ class Player:
     def eat_coin(self):
         self.app.coins.remove(self.grid_pos)
         self.current_score += 1
+
+        sound = pygame.mixer.Sound('Sounds/munch_1.wav')
+        sound.play()
+            
 
     def move(self, direction):
         self.stored_direction = direction
