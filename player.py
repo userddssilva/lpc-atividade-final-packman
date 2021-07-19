@@ -23,6 +23,7 @@ class Player(GameObject):
         self.able_to_move = True
 
         self.current_score = 0
+        self.high_score = 0
         self.speed = 2
         self.lives = 3
 

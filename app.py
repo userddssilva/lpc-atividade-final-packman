@@ -45,6 +45,9 @@ class App:
                 self.game_over_update()
                 self.game_over_draw()
             else:
+                file = open("highscore.txt", "w")
+                file.write('0')
+                file.close()
                 self.running = False
             self.clock.tick(FPS)
         pygame.quit()
@@ -98,6 +101,12 @@ class App:
     def reset(self):
         self.player.lives = 3
         self.player.current_score = 0
+
+        file = open("highscore.txt")
+        highscore = int(file.readline())
+        file.close()
+
+        self.player.high_score = highscore
         self.player.grid_pos = Vector2(self.player.starting_pos)
         self.player.pix_pos = self.player.get_pix_pos()
         self.player.direction *= 0
@@ -218,7 +227,7 @@ class App:
         self.draw_coins()
         self.draw_text('CURRENT SCORE: {}'.format(self.player.current_score),
                        self.screen, [60, 0], 20, (222, 222, 255), FONT)
-        self.draw_text('HIGH SCORE: 0', self.screen, [WIDTH // 2 + 60, 0], 20, (222, 222, 255), FONT)
+        self.draw_text('HIGH SCORE: %d' % self.player.high_score, self.screen, [WIDTH // 2 + 60, 0], 20, (222, 222, 255), FONT)
         self.player.draw()
 
         for enemy in self.enemies:
@@ -251,6 +260,17 @@ class App:
     ''' game over functions '''
 
     def game_over_events(self):
+        file = open("highscore.txt")
+        highscore = int(file.readline())
+        file.close()
+
+        if self.player.current_score > highscore:
+            highscore = self.player.current_score
+
+        file = open("highscore.txt", "w")
+        file.write(str(highscore))
+        file.close()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
