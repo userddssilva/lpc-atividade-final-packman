@@ -79,7 +79,6 @@ class Enemy(GameObject):
             if self.second_time - self.first_time >= 10:
                 self.first_time = self.second_time
                 self.speed = 2
-                print(self.speed)
 
     def draw(self):
         self.app.screen.blit(self.image, ((int(self.pix_pos.x) - self.radius), (int(self.pix_pos.y) - self.radius)))

@@ -1,8 +1,6 @@
 import pygame
 from pygame.math import Vector2
 
-import time
-
 from game_object import GameObject
 from settings import *
 
@@ -26,7 +24,7 @@ class Player(GameObject):
 
         self.current_score = 0
         self.speed = 2
-        self.lives = 1
+        self.lives = 3
 
     def update(self):
         if self.able_to_move:

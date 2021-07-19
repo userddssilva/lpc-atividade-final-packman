@@ -36,10 +36,6 @@ class App:
             elif self.state == 'credit':
                 self.credits_draw()
                 self.credits_events()
-            elif self.state == 'start':
-                self.start_events()
-                self.start_update()
-                self.start_draw()
             elif self.state == 'playing':
                 self.playing_events()
                 self.playing_update()
@@ -141,7 +137,7 @@ class App:
 
     def menu_draw(self):
         self.screen.fill(BLACK)
-        self.draw_text('PACKMAN', self.screen, [
+        self.draw_text('PACMAN', self.screen, [
             WIDTH // 2, HEIGHT // 2 - 200], FONT_SIZE, (0, 255, 255), FONT, centered=True)
         self.draw_text('START', self.screen, [
                        WIDTH // 2, HEIGHT // 2 - 50], FONT_SIZE, (255, 255, 0), FONT, centered=True)
@@ -157,9 +153,8 @@ class App:
                 self.running = False
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                print(pos)
                 if (255 <= pos[0] <= 353) and (270 <= pos[1] <= 295):
-                    self.state = 'start'
+                    self.state = 'playing'
                 elif (255 <= pos[0] <= 353) and (326 <= pos[1] <= 348):
                     self.state = 'credit'
                 elif (255 <= pos[0] <= 353) and (376 <= pos[1] <= 395):
@@ -189,7 +184,6 @@ class App:
                 self.running = False
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                print(pos)
                 if (45 <= pos[0] <= 120) and (20 <= pos[1] <= 46):
                     self.state = 'menu'
 
