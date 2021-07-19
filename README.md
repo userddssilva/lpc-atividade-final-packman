@@ -33,3 +33,5 @@ pip install requirements.txt
 
 python main.py
 ```
+# Apresentação
+<div style="text-align:center"><img src="apresentacao-final.mp4" /></div>
