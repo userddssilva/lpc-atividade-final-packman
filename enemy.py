@@ -1,22 +1,32 @@
 import pygame
+from pygame import Vector2
+
 import random
 from settings import *
 
-vec = pygame.math.Vector2
-
 
 class Enemy:
-    def __init__(self, app, pos, number, nome):
+    def __init__(self, app, pos, number):
+
         self.app = app
+
         self.grid_pos = pos
-        self.path = 'fas'
         self.starting_pos = [pos.x, pos.y]
         self.pix_pos = self.get_pix_pos()
-        self.radius = int(self.app.cell_width//2.3)
+
         self.number = number
         self.colour = self.set_colour()
-        self.direction = vec(0, 0)
         self.personality = self.set_personality()
+
+        self.sprites = []
+        self.sprites.append(pygame.image.load('Sprites/Ghosts/' + self.colour + '_up_1.png'))
+        self.sprites.append(pygame.image.load('Sprites/Ghosts/' + self.colour + '_up_2.png'))
+        self.current_sprite = 0
+
+        self.image = self.sprites[self.current_sprite]
+        self.radius = self.image.get_width() / 2
+
+        self.direction = Vector2(0, 0)
         self.target = None
         self.speed = self.set_speed()
 
@@ -27,15 +37,40 @@ class Enemy:
             if self.time_to_move():
                 self.move()
 
-        # Setting grid position in reference to pix position
-        self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER +
-                            self.app.cell_width//2)//self.app.cell_width+1
-        self.grid_pos[1] = (self.pix_pos[1]-TOP_BOTTOM_BUFFER +
-                            self.app.cell_height//2)//self.app.cell_height+1
+        self.grid_pos[0] = (self.pix_pos[0] - TOP_BOTTOM_BUFFER +
+                            self.app.cell_width // 2) // self.app.cell_width + 1
+        self.grid_pos[1] = (self.pix_pos[1] - TOP_BOTTOM_BUFFER +
+                            self.app.cell_height // 2) // self.app.cell_height + 1
+
+        # sprites animation
+        if self.direction == (0, -1):
+            self.sprites.clear()
+            self.sprites.append(pygame.image.load('Sprites/Ghosts/' + self.colour + '_up_1.png'))
+            self.sprites.append(pygame.image.load('Sprites/Ghosts/' + self.colour + '_up_2.png'))
+
+        if self.direction == (0, 1):
+            self.sprites.clear()
+            self.sprites.append(pygame.image.load('Sprites/Ghosts/' + self.colour + '_down_1.png'))
+            self.sprites.append(pygame.image.load('Sprites/Ghosts/' + self.colour + '_down_2.png'))
+
+        if self.direction == (-1, 0):
+            self.sprites.clear()
+            self.sprites.append(pygame.image.load('Sprites/Ghosts/' + self.colour + '_left_1.png'))
+            self.sprites.append(pygame.image.load('Sprites/Ghosts/' + self.colour + '_left_2.png'))
+
+        if self.direction == (1, 0):
+            self.sprites.clear()
+            self.sprites.append(pygame.image.load('Sprites/Ghosts/' + self.colour + '_right_1.png'))
+            self.sprites.append(pygame.image.load('Sprites/Ghosts/' + self.colour + '_right_2.png'))
+
+        self.current_sprite += 0.15
+        if int(self.current_sprite) >= len(self.sprites):
+            self.current_sprite = 0
+
+        self.image = self.sprites[int(self.current_sprite)]
 
     def draw(self):
-        pygame.draw.circle(self.app.screen, self.colour,
-                           (int(self.pix_pos.x), int(self.pix_pos.y)), self.radius)
+        self.app.screen.blit(self.image, ((int(self.pix_pos.x) - self.radius), (int(self.pix_pos.y) - self.radius)))
 
     def set_speed(self):
         if self.personality in ["speedy", "scared"]:
@@ -48,22 +83,23 @@ class Enemy:
         if self.personality == "speedy" or self.personality == "slow":
             return self.app.player.grid_pos
         else:
-            if self.app.player.grid_pos[0] > COLS//2 and self.app.player.grid_pos[1] > ROWS//2:
-                return vec(1, 1)
-            if self.app.player.grid_pos[0] > COLS//2 and self.app.player.grid_pos[1] < ROWS//2:
-                return vec(1, ROWS-2)
-            if self.app.player.grid_pos[0] < COLS//2 and self.app.player.grid_pos[1] > ROWS//2:
-                return vec(COLS-2, 1)
+            if self.app.player.grid_pos[0] > COLS // 2 and self.app.player.grid_pos[1] > ROWS // 2:
+                return Vector2(1, 1)
+            if self.app.player.grid_pos[0] > COLS // 2 and self.app.player.grid_pos[1] < ROWS // 2:
+                return Vector2(1, ROWS - 2)
+            if self.app.player.grid_pos[0] < COLS // 2 and self.app.player.grid_pos[1] > ROWS // 2:
+                return Vector2(COLS - 2, 1)
             else:
-                return vec(COLS-2, ROWS-2)
+                return Vector2(COLS - 2, ROWS - 2)
 
     def time_to_move(self):
-        if int(self.pix_pos.x+TOP_BOTTOM_BUFFER//2) % self.app.cell_width == 0:
-            if self.direction == vec(1, 0) or self.direction == vec(-1, 0) or self.direction == vec(0, 0):
+        if int(self.pix_pos.x + TOP_BOTTOM_BUFFER // 2) % self.app.cell_width == 0:
+            if self.direction == Vector2(1, 0) or self.direction == Vector2(-1, 0) or self.direction == Vector2(0, 0):
                 return True
-        if int(self.pix_pos.y+TOP_BOTTOM_BUFFER//2) % self.app.cell_height == 0:
-            if self.direction == vec(0, 1) or self.direction == vec(0, -1) or self.direction == vec(0, 0):
+        if int(self.pix_pos.y + TOP_BOTTOM_BUFFER // 2) % self.app.cell_height == 0:
+            if self.direction == Vector2(0, 1) or self.direction == Vector2(0, -1) or self.direction == Vector2(0, 0):
                 return True
+
         return False
 
     def move(self):
@@ -80,11 +116,13 @@ class Enemy:
         next_cell = self.find_next_cell_in_path(target)
         xdir = next_cell[0] - self.grid_pos[0]
         ydir = next_cell[1] - self.grid_pos[1]
-        return vec(xdir, ydir)
+
+        return Vector2(xdir, ydir)
 
     def find_next_cell_in_path(self, target):
         path = self.BFS([int(self.grid_pos.x), int(self.grid_pos.y)], [
                         int(target[0]), int(target[1])])
+
         return path[1]
 
     def BFS(self, start, target):
@@ -92,9 +130,11 @@ class Enemy:
         for cell in self.app.walls:
             if cell.x < 28 and cell.y < 30:
                 grid[int(cell.y)][int(cell.x)] = 1
+
         queue = [start]
         path = []
         visited = []
+
         while queue:
             current = queue[0]
             queue.remove(queue[0])
@@ -104,8 +144,8 @@ class Enemy:
             else:
                 neighbours = [[0, -1], [1, 0], [0, 1], [-1, 0]]
                 for neighbour in neighbours:
-                    if neighbour[0]+current[0] >= 0 and neighbour[0] + current[0] < len(grid[0]):
-                        if neighbour[1]+current[1] >= 0 and neighbour[1] + current[1] < len(grid):
+                    if neighbour[0] + current[0] >= 0 and neighbour[0] + current[0] < len(grid[0]):
+                        if neighbour[1] + current[1] >= 0 and neighbour[1] + current[1] < len(grid):
                             next_cell = [neighbour[0] + current[0], neighbour[1] + current[1]]
                             if next_cell not in visited:
                                 if grid[next_cell[1]][next_cell[0]] != 1:
@@ -117,6 +157,7 @@ class Enemy:
                 if step["Next"] == target:
                     target = step["Current"]
                     shortest.insert(0, step["Current"])
+
         return shortest
 
     def get_random_direction(self):
@@ -130,25 +171,28 @@ class Enemy:
                 x_dir, y_dir = -1, 0
             else:
                 x_dir, y_dir = 0, -1
-            next_pos = vec(self.grid_pos.x + x_dir, self.grid_pos.y + y_dir)
+
+            next_pos = Vector2(self.grid_pos.x + x_dir, self.grid_pos.y + y_dir)
+
             if next_pos not in self.app.walls:
                 break
-        return vec(x_dir, y_dir)
+            
+        return Vector2(x_dir, y_dir)
 
     def get_pix_pos(self):
-        return vec((self.grid_pos.x*self.app.cell_width)+TOP_BOTTOM_BUFFER//2+self.app.cell_width//2,
-                   (self.grid_pos.y*self.app.cell_height)+TOP_BOTTOM_BUFFER//2 +
-                   self.app.cell_height//2)
+        return Vector2((self.grid_pos.x * self.app.cell_width) + TOP_BOTTOM_BUFFER // 2 + self.app.cell_width // 2,
+                   (self.grid_pos.y * self.app.cell_height) + TOP_BOTTOM_BUFFER // 2 +
+                   self.app.cell_height // 2)
 
     def set_colour(self):
         if self.number == 0:
-            return (43, 78, 203)
+            return 'blue'
         if self.number == 1:
-            return (197, 200, 27)
+            return 'pink'
         if self.number == 2:
-            return (189, 29, 29)
+            return 'red'
         if self.number == 3:
-            return (215, 159, 33)
+            return 'orange'
 
     def set_personality(self):
         if self.number == 0:
@@ -156,6 +200,6 @@ class Enemy:
         elif self.number == 1:
             return "slow"
         elif self.number == 2:
-            return "random"
+            return "random"         
         else:
             return "scared"
