@@ -221,6 +221,19 @@ class App:
             if enemy.grid_pos == self.player.grid_pos:
                 self.remove_life()
 
+        if len(self.coins) <= 20:
+            for enemy in self.enemies:
+                if enemy.number == 0 and enemy.speed == 1:
+                    enemy.speed = 1.5
+
+        if len(self.coins) <= 10:
+            for enemy in self.enemies:
+                if enemy.number == 0 and enemy.speed == 1.5:
+                    enemy.speed = 2
+
+        if len(self.coins) == 0:
+            self.reset()
+
     def playing_draw(self):
         self.screen.fill(BLACK)
         self.screen.blit(self.background, (TOP_BOTTOM_BUFFER // 2, TOP_BOTTOM_BUFFER // 2))

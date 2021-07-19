@@ -33,7 +33,7 @@ class Enemy(GameObject):
         self.second_time = None
 
     def update(self):
-        self.change_speed()
+        # self.change_speed()
         self.target = self.set_target()
         if self.target != self.grid_pos:
             self.pix_pos += self.direction * self.speed
