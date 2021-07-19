@@ -178,21 +178,28 @@ class Enemy(GameObject):
 
     def get_random_direction(self):
         while True:
-            number = random.randint(-2, 1)
+            number = random.randint(-6, 5)
             if number == -2:
                 x_dir, y_dir = 1, 0
             elif number == -1:
                 x_dir, y_dir = 0, 1
             elif number == 0:
                 x_dir, y_dir = -1, 0
+            elif number == -3:
+                x_dir, y_dir = 0, 1
+            elif number == 2:
+                x_dir, y_dir = -1, 0
+            elif number == -4:
+                x_dir, y_dir = 1, 0
+            elif number == 3:
+                x_dir, y_dir = 0, 1
             else:
                 x_dir, y_dir = 0, -1
-
             next_pos = Vector2(self.grid_pos.x + x_dir, self.grid_pos.y + y_dir)
 
             if next_pos not in self.app.walls:
                 break
-            
+
         return Vector2(x_dir, y_dir)
 
     def get_pix_pos(self):
