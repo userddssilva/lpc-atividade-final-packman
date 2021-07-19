@@ -1,12 +1,7 @@
-import pygame
-from pygame.math import Vector2
-from pygame.display import set_mode
-
 import sys
 
-from settings import *
-from player import *
 from enemy import *
+from player import *
 
 pygame.init()
 
@@ -17,7 +12,7 @@ class App:
         self.clock = pygame.time.Clock()
 
         self.running = True
-        self.state = 'start'
+        self.state = 'menu'
 
         self.cell_width = MAZE_WIDTH//COLS
         self.cell_height = MAZE_HEIGHT//ROWS
@@ -35,7 +30,13 @@ class App:
 
     def run(self):
         while self.running:
-            if self.state == 'start':
+            if self.state == 'menu':
+                self.menu_events()
+                self.menu_draw()
+            elif self.state == 'credit':
+                self.credits_draw()
+                self.credits_events()
+            elif self.state == 'start':
                 self.start_events()
                 self.start_update()
                 self.start_draw()
@@ -137,6 +138,60 @@ class App:
         self.draw_text('1 PLAYER ONLY', self.screen, [
                        WIDTH // 2, HEIGHT // 2 + 50], FONT_SIZE, (0, 255, 255), FONT, centered=True)
         pygame.display.update()
+
+    def menu_draw(self):
+        self.screen.fill(BLACK)
+        self.draw_text('PACKMAN', self.screen, [
+            WIDTH // 2, HEIGHT // 2 - 200], FONT_SIZE, (0, 255, 255), FONT, centered=True)
+        self.draw_text('START', self.screen, [
+                       WIDTH // 2, HEIGHT // 2 - 50], FONT_SIZE, (255, 255, 0), FONT, centered=True)
+        self.draw_text('CREDIT', self.screen, [
+            WIDTH // 2, HEIGHT // 2], FONT_SIZE, (255, 255, 0), FONT, centered=True)
+        self.draw_text('QUIT', self.screen, [
+            WIDTH // 2, HEIGHT // 2 + 50], FONT_SIZE, (255, 255, 0), FONT, centered=True)
+        pygame.display.update()
+
+    def menu_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                print(pos)
+                if (255 <= pos[0] <= 353) and (270 <= pos[1] <= 295):
+                    self.state = 'start'
+                elif (255 <= pos[0] <= 353) and (326 <= pos[1] <= 348):
+                    self.state = 'credit'
+                elif (255 <= pos[0] <= 353) and (376 <= pos[1] <= 395):
+                    sys.exit()
+
+    def credits_draw(self):
+        self.screen.fill(BLACK)
+        self.draw_text('Authors', self.screen, [
+            WIDTH // 2, HEIGHT // 2 - 200], FONT_SIZE, (0, 255, 255), FONT, centered=True)
+        self.draw_text('Carlos Martins', self.screen, [
+            WIDTH // 2, HEIGHT // 2 - 50], FONT_SIZE, (255, 255, 0), FONT, centered=True)
+        self.draw_text('Dayvson Silva', self.screen, [
+            WIDTH // 2, HEIGHT // 2], FONT_SIZE, (255, 255, 0), FONT, centered=True)
+        self.draw_text('Elikson Tavares', self.screen, [
+            WIDTH // 2, HEIGHT // 2 + 50], FONT_SIZE, (255, 255, 0), FONT, centered=True)
+        self.draw_text('Fabio Ono', self.screen, [
+            WIDTH // 2, HEIGHT // 2 + 100], FONT_SIZE, (255, 255, 0), FONT, centered=True)
+        self.draw_text('Gustavo Fadel', self.screen, [
+            WIDTH // 2, HEIGHT // 2 + 150], FONT_SIZE, (255, 255, 0), FONT, centered=True)
+        self.draw_text('Back', self.screen, [
+            80, 30], FONT_SIZE, (255, 255, 0), FONT, centered=True)
+        pygame.display.update()
+
+    def credits_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                print(pos)
+                if (45 <= pos[0] <= 120) and (20 <= pos[1] <= 46):
+                    self.state = 'menu'
 
     ''' playing functions '''
 

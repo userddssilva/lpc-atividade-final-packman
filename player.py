@@ -3,12 +3,13 @@ from pygame.math import Vector2
 
 import time
 
+from game_object import GameObject
 from settings import *
 
 
-class Player:
+class Player(GameObject):
     def __init__(self, app, pos):
-
+        super().__init__(app, pos)
         self.sprites = []
         self.sprites.append(pygame.image.load('Sprites/Pacman/idle.png'))
         self.sprites.append(pygame.image.load('Sprites/Pacman/right_1.png'))
@@ -17,12 +18,6 @@ class Player:
 
         self.image = self.sprites[self.current_sprite]
         self.radius = self.image.get_width() / 2
-
-        self.app = app
-
-        self.starting_pos = [pos.x, pos.y]
-        self.grid_pos = pos
-        self.pix_pos = self.get_pix_pos()
 
         self.direction = Vector2(1, 0)
         self.stored_direction = None

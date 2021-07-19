@@ -1,18 +1,17 @@
+import time
+
 import pygame
 from pygame import Vector2
 
 import random
+
+from game_object import GameObject
 from settings import *
 
 
-class Enemy:
+class Enemy(GameObject):
     def __init__(self, app, pos, number):
-
-        self.app = app
-
-        self.grid_pos = pos
-        self.starting_pos = [pos.x, pos.y]
-        self.pix_pos = self.get_pix_pos()
+        super().__init__(app, pos)
 
         self.number = number
         self.colour = self.set_colour()
@@ -30,7 +29,11 @@ class Enemy:
         self.target = None
         self.speed = self.set_speed()
 
+        self.first_time = time.time()
+        self.second_time = None
+
     def update(self):
+        self.change_speed()
         self.target = self.set_target()
         if self.target != self.grid_pos:
             self.pix_pos += self.direction * self.speed
@@ -69,15 +72,29 @@ class Enemy:
 
         self.image = self.sprites[int(self.current_sprite)]
 
+    def change_speed(self):
+        # check if is red ghost and change him speed
+        if self.number == 0 and self.speed < 2:
+            self.second_time = time.time()
+            if self.second_time - self.first_time >= 10:
+                self.first_time = self.second_time
+                self.speed = 2
+                print(self.speed)
+
     def draw(self):
         self.app.screen.blit(self.image, ((int(self.pix_pos.x) - self.radius), (int(self.pix_pos.y) - self.radius)))
 
     def set_speed(self):
-        if self.personality in ["speedy", "scared"]:
-            speed = 2
-        else:
-            speed = 1
-        return speed
+        # if self.number == 0:
+        #     return 1
+        # elif self.number == 1:
+        #     return 1
+        # elif self.number == 2:
+        #     return 1
+        # elif self.number == 3:
+        #     return 1
+        # elif self.number == 4:
+        return 1
 
     def set_target(self):
         if self.personality == "speedy" or self.personality == "slow":
@@ -126,7 +143,7 @@ class Enemy:
         return path[1]
 
     def BFS(self, start, target):
-        grid = [[0 for x in range(28)] for x in range(30)]
+        grid = [[0 for x in range(28)] for _ in range(30)]
         for cell in self.app.walls:
             if cell.x < 28 and cell.y < 30:
                 grid[int(cell.y)][int(cell.x)] = 1
@@ -186,11 +203,11 @@ class Enemy:
 
     def set_colour(self):
         if self.number == 0:
-            return 'blue'
+            return 'red'
         if self.number == 1:
             return 'pink'
         if self.number == 2:
-            return 'red'
+            return 'blue'
         if self.number == 3:
             return 'orange'
 
