@@ -24,8 +24,8 @@ Link dos Sprites do game
 http://labs.phaser.io/assets/games/pacman/
 
 # Como executar 
-``
+```
 pip install requirements.txt
 
 python main.py
-``
+```
