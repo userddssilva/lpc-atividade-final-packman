@@ -20,6 +20,10 @@ Equipe: selecionada durante a aula
 - Gustavo Fadel
 
 
+# Diagrama
+<div style="text-align:center"><img src="diagrama.png" /></div>
+
+
 Link dos Sprites do game
 http://labs.phaser.io/assets/games/pacman/
 
